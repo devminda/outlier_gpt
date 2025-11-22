@@ -1,0 +1,58 @@
+[project]
+name = "outlier_gpt"
+version = "0.1.0"
+description = "A Python package that explains anomalies in tabular data using LLM-generated hypotheses."
+readme = "README.md"
+authors = [
+  { name = "Devminda Abeynayake", email = "devmindaabeynayake@gmail.com" }
+]
+maintainers = [
+  { name = "Devminda Abeynayake", email = "devmindaabeynayake@gmail.com" }
+]
+classifiers = [
+  # TODO: add Trove classifiers here, e.g.:
+  # "Programming Language :: Python :: 3",
+  # "License :: OSI Approved :: MIT License",
+]
+license = { text = "MIT" }
+dependencies = [
+  "typer",
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = [
+  "coverage",  # testing
+  "pytest",    # testing
+  "ruff",      # linting
+  "ty",        # checking types (if this is a real package; otherwise fix)
+  "ipdb",      # debugging
+]
+
+[project.urls]
+bugs = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+changelog = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/master/changelog.md"
+homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+
+[project.scripts]
+outlier_gpt = "outlier_gpt.cli:app"
+
+[tool.ty]
+# All rules are enabled as "error" by default; no need to specify unless overriding.
+# rules.TY015 = "warn"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # Pyflakes
+  "I",   # isort
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+]
+
+[tool.uv]
+package = true
