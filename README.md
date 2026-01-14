@@ -117,7 +117,7 @@ print(f"Indices (Dates): {list(outlier_indices)}")
 
 ### Explain Outliers
 
-** Option A (Recommended)** : Explain a Single Outlier with Deep Search
+**Option A (Recommended)** : Explain a Single Outlier with Deep Search
 - Analyze the first detected outlier in depth.
 - The `deep_search=True` flag tells the LLM to use external tools 
 - to find news matching the date/ticker, leading to a much stronger "Market Event" justification.
@@ -138,7 +138,7 @@ if outlier_indices:
     print(f"Index {first_outlier_index}:\n{explanation_single}")
 
 ```
-** Option B**: Explain Multiple Outliers (Batch Processing)
+**Option B**: Explain Multiple Outliers (Batch Processing)
 - Use explain_outliers for quick, generalized explanations of all detected anomalies.
 - This typically does NOT use deep search for cost/speed reasons.
 
