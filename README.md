@@ -58,6 +58,7 @@ pip install -e .
 
 ## Quick Start
 
+### Import the data using yfinance api
 ```python
 import pandas as pd
 # Install yfinance: pip install yfinance
@@ -74,18 +75,29 @@ df.columns = df.columns.droplevel(1)
 df.reset_index(inplace=True)
 df.rename(columns={"Date": "timestamp", "Close": "value"}, inplace=True)
 df.set_index('timestamp', inplace=True)
+```
+### Setup the agent - You need to add your openai api key here
+You can also set up a global context for the agent to narrow down the agents reasoning. This is an optional feature.
+```python
 # 2. Initialize the agent 
 # Note: Use a model that supports web browsing/tools like gpt-4-turbo or gpt-4o for deep search
 agent = OutlierAgent(api_key="your-openai-api-key", model="gpt-5")
 
 # Optional: Set a global context (accessible via the property setter)
 agent.context = f"The primary focus of this analysis is extreme volatility in {TICKER} stock."
+```
 
-# 3. Detect Outliers
-# We look for outliers in the 'Close' price using the Z-score method.
+### Detect Outliers
+We look for outliers in the 'Close' price using the Z-score method. There are other methods available as well.
+
+```python
 outlier_indices = outlier_detection.rolling_window_method(
     stock_data, 'value', window_size=5, threshold=3)
+```
 
+If you like we can visualize the outliers as well.
+
+```python
 # Visualizing
 plt.figure(figsize=(10, 4))
 plt.plot(df.index, df['value'], label='Value')
@@ -101,13 +113,16 @@ plt.show()
 print(f"Detected {len(outlier_indices)} outlier(s) in {TICKER} stock.")
 print(f"Indices (Dates): {list(outlier_indices)}")
 
-# 4. Explain Outliers
+```
 
-# --- Option A (Recommended): Explain a Single Outlier with Deep Search ---
-# Analyze the first detected outlier in depth.
-# The `deep_search=True` flag tells the LLM to use external tools 
-# to find news matching the date/ticker, leading to a much stronger "Market Event" justification.
+### Explain Outliers
 
+** Option A (Recommended)** : Explain a Single Outlier with Deep Search
+- Analyze the first detected outlier in depth.
+- The `deep_search=True` flag tells the LLM to use external tools 
+- to find news matching the date/ticker, leading to a much stronger "Market Event" justification.
+
+```python
 if outlier_indices:
     first_outlier_index = outlier_indices[0]
     
@@ -122,11 +137,12 @@ if outlier_indices:
     print("\n--- Single Outlier Explanation (Deep Search) ---")
     print(f"Index {first_outlier_index}:\n{explanation_single}")
 
+```
+** Option B**: Explain Multiple Outliers (Batch Processing)
+- Use explain_outliers for quick, generalized explanations of all detected anomalies.
+- This typically does NOT use deep search for cost/speed reasons.
 
-# --- Option B: Explain Multiple Outliers (Batch Processing) ---
-# Use explain_outliers for quick, generalized explanations of all detected anomalies.
-# This typically does NOT use deep search for cost/speed reasons.
-
+```python
 explanations_batch = agent.explain_outliers(
     df,
     data_column=data_column,
